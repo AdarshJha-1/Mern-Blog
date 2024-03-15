@@ -1,11 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useState } from "react";
+import { signInStart, signInSuccess, SignInFailure } from "../redux/user/userSlice";
+import {useDispatch, useSelector} from 'react-redux'
+
 const SignIn = () => {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const {loading, error: errorMessage} = useSelector(state => state.user)
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
@@ -13,11 +17,10 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
-      return setError("Please fill out all field");
+      return dispatch(SignInFailure("Please fill all the fields"))
     }
     try {
-      setIsLoading(true);
-      setError(null);
+      dispatch(signInStart());
       const response = await fetch("/api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -25,15 +28,14 @@ const SignIn = () => {
       });
       const data = await response.json();
       if (data.success === false) {
-        return setError(data.message);
+        dispatch(SignInFailure(data.message));
       }
-      setIsLoading(false);
       if (response.ok) {
+        dispatch(signInSuccess(data))
        navigate('/')
       }
     } catch (error) {
-      setError(error.message);
-      setIsLoading(false);
+      dispatch(SignInFailure(error.message));
     }
   };
   return (
@@ -74,9 +76,9 @@ const SignIn = () => {
             <Button
               gradientDuoTone={"purpleToPink"}
               type="submit"
-              disabled={isLoading}
+              disabled={loading}
             >
-              {isLoading ? (
+              {loading ? (
                 <>
                   <Spinner size={'sm'} /> <span className="pl-3">Loading...</span>
                 </>
@@ -91,9 +93,9 @@ const SignIn = () => {
               Sign Up
             </Link>
           </div>
-          {error && (
+          {errorMessage && (
             <Alert className="mt-5" color={"failure"}>
-              {error}
+              {errorMessage}
             </Alert>
           )}
         </div>
