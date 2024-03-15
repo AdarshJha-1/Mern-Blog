@@ -1,9 +1,12 @@
 import express from "express";
 import mongoose from "mongoose";
 import "dotenv/config";
-const app = express();
+
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
+
+const app = express();
+
 mongoose
   .connect(`${process.env.MONGO_DB_URL}/Blog`)
   .then(() => {
@@ -11,14 +14,13 @@ mongoose
   })
   .catch((error) => console.log(error));
 
-app.use(express.json());
-
 app.listen(8000, () => {
   console.log("Server is running on port 8000");
 });
 
-app.use("/api/user", userRoutes);
+app.use(express.json());
 app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
