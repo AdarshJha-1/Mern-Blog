@@ -8,7 +8,7 @@ import authRoutes from "./routes/auth.route.js";
 const app = express();
 
 mongoose
-  .connect(`${process.env.MONGO_DB_URL}/Blog`)
+  .connect(process.env.MONGO_DB_URL)
   .then(() => {
     console.log("MongoDB Connected");
   })
