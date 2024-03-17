@@ -1,11 +1,13 @@
+import { Link, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon } from "react-icons/fa";
-import { Link, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+
 const Header = () => {
   const path = useLocation().pathname;
   const { createUser } = useSelector((state) => state.user);
+  
   return (
     <Navbar className="border-b-2">
       <Link
