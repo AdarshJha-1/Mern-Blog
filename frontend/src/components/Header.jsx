@@ -4,6 +4,7 @@ import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { toggleTheme } from "../redux/theme/themeSlice";
+
 const Header = () => {
   const path = useLocation().pathname;
   const { createUser } = useSelector((state) => state.user);
